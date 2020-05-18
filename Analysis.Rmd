@@ -2,11 +2,13 @@
 title: "Exploring Hindu Muslim Violence in India"
 author: "Ojaswi Malik"
 output: github_document
+
 ---
 
 ## Introduction
 
-### Goal: This report aims to explore the history of violent events between the 2 controversial religions of Hinduism and Islam in the context of post-independant India. Keeping in mind the recent riots in the capital New Delhi, it is essential to trace back and analyse this relationship in the latter half of the 20th century. This report relies on the dataset created by Varshney and Wilkinson, who collected all incidents on Hindu-Muslim Violence in India between 1950-1995 reported in the national newspaper Times of India. 
+### Goal: 
+This report aims to explore the history of violent events between the 2 controversial religions of Hinduism and Islam in the context of post-independant India. Keeping in mind the recent riots in the capital New Delhi, it is essential to trace back and analyse this relationship in the latter half of the 20th century. This report relies on the dataset created by Varshney and Wilkinson, who collected all incidents on Hindu-Muslim Violence in India between 1950-1995 reported in the national newspaper Times of India. 
 
 
 ```{r setup, include=FALSE}
@@ -24,7 +26,7 @@ theme_set(theme_minimal())
 
 ### Importing the data files
 
-```{r import data}
+```{r import data, message=FALSE, warning=FALSE}
 #Importing the first dataset
 hindu_muslim_data <- here("data", "hindu_muslim_violence.csv") %>%
   read_csv()
@@ -40,7 +42,7 @@ yearly_pop_pm_data <- here("data", "yearly_pop_pm.csv") %>%
 
 ### Data Wrangling
 
-``` {r wrangling}
+``` {r wrangling, message=FALSE, warning=FALSE}
 #Joining the 2 datasets using left join
 hindu_muslim_complete_data <- left_join(
                                 x = hindu_muslim_data, 
@@ -50,7 +52,8 @@ hindu_muslim_complete_data <- left_join(
 
 ## Exploring Data
 
-### **Analysis 1**: First, I want to see how many hindu-muslim violence incidents were reported each year from 1950-1995
+### **Analysis 1**: 
+First, I want to see how many hindu-muslim violence incidents were reported each year from 1950-1995
 
 ```{r count yearly incidents}
 
@@ -73,18 +76,24 @@ hindu_muslim_complete_data %>%
 
 ```
 
-### **Observation 1**: From the above graph, we can pbserve that yearly violent events are un-related and can be extremely high in one year, and low in the next. However, there was a peak in violent events in 1985 and 1990, which can be explained by the communal riots in that period. Moreover, in noticing a general trend, there has been a rise in violent events over the years. 
+### **Observation 1**: 
+From the above graph, we can pbserve that yearly violent events are un-related and can be extremely high in one year, and low in the next. However, there was a peak in violent events in 1985 and 1990, which can be explained by the communal riots in that period. Moreover, in noticing a general trend, there has been a rise in violent events over the years. 
 
-### **Analysis 2**: Next I want to observe the changes in Hindus and Muslims proportion of population in the time period 1950-1995.
+### **Analysis 2**: 
+Next I want to observe the changes in Hindus and Muslims proportion of population in the time period 1950-1995.
 
-```{r}
+```{r proportion population, message=FALSE, warning=FALSE}
 #Saving this graph to reuse in next analysis
 prop_change <- hindu_muslim_complete_data %>%
-  group_by(YEAR, prime_minister) %>%
+  #grouping by year
+  group_by(YEAR) %>%
+  #plotting the graph
   ggplot(mapping = aes(x = YEAR)) + 
   geom_line(mapping = aes(y = hindu_prop, color = "Proportion of Hindu population")) +
   geom_line(mapping = aes(y = muslim_prop, color = "Proportion of Muslim population")) +
+  #making y-axis in %
   scale_y_continuous(labels = scales::percent) +
+  #labelling graph
   labs(
     title = "Proportion of Hindu and Muslim population in India  from 1950-1995" ,
     x = "Year",
@@ -98,16 +107,20 @@ prop_change <- hindu_muslim_complete_data %>%
 prop_change
 ```
 
-### **Observation 2**: Although the changes have been small, we can observe a gradual decrease in proportion of Hindus and an increase in the proportion of Muslims as recorded in the census data between 1950-1995. 
+### **Observation 2**: 
+Although the changes have been small, we can observe a gradual decrease in proportion of Hindus and an increase in the proportion of Muslims as recorded in the census data between 1950-1995. 
 
-### **Analysis 3**: Now, I want to see the number of violent events aggregated by month. This is to observe if any month would have an unusual trend due to seasonal or festivities causes.
+### **Analysis 3**: 
+Now, I want to see the number of violent events aggregated by month. This is to observe if any month would have an unusual trend due to seasonal or festivities causes.
 
 ```{r monthy count incidents}
 
 hindu_muslim_complete_data %>%
   ggplot( mapping = aes(x = MONTH_BY_N)) +
   geom_bar() +
+  #labelling and setiing limits to months on x-axis
   scale_x_discrete(limits = month.abb ) +
+  #labelling graph
    labs(
     title = "Monthly number of Hindu-Muslim violence incidents from 1950-1995" ,
     x = "Month",
@@ -118,9 +131,11 @@ hindu_muslim_complete_data %>%
 
 ```
 
-### **Observation 3**: March has the highest number of violence incidents in the entire year. However, it is closely followed by October and September.
+### **Observation 3**: 
+March has the highest number of violence incidents in the entire year. However, it is closely followed by October and September.
 
-### **Analysis 4**: In this analysis, I want to observe the state-wise number of Hindu-Muslim incidents of violents
+### **Analysis 4**: 
+In this analysis, I want to observe the state-wise number of Hindu-Muslim incidents of violents
 
 ```{r state-wise}
 
@@ -133,7 +148,9 @@ hindu_muslim_complete_data %>%
   ) %>%
   ggplot(mapping = aes(y = count, x = fct_reorder(STATECODE, count))) +
   geom_col() + 
+  #flipping coordinates to see each state clearly
   coord_flip() +
+  #labelling graph
   labs(
     title = "State-wise Hindu-Muslim violence incidents from 1950-1995" ,
     y = "Number of Incidents",
@@ -143,24 +160,29 @@ hindu_muslim_complete_data %>%
 
 ```
 
-### **Observation 4**: The state of GU ie Gujarat has the highest number of incidents of Hindu-Muslim violence. MA (Maharashtra) and UP (Uttar Pradesh) also have extremely high number of incidents
+### **Observation 4**: 
+The state of GU ie Gujarat has the highest number of incidents of Hindu-Muslim violence. MA (Maharashtra) and UP (Uttar Pradesh) also have extremely high number of incidents
 
-### **Note regarding Analysis 4**: In constructing this analysis, I noticed the fallacies in coding the data by the authors. Initially, I had tried to use STATE to get full state-names, but some states were written with different spellings or had another tiny differences which lead to similiar states being printed multiple times. However, the use of STATECODE resolved this error.
+###**Note regarding Analysis 4**: 
+In constructing this analysis, I noticed the fallacies in coding the data by the authors. Initially, I had tried to use STATE to get full state-names, but some states were written with different spellings or had another tiny differences which lead to similiar states being printed multiple times. However, the use of STATECODE resolved this error.
 
-### **Analysis 5**: In this analysis, I want to focus on the top 3 states observed above i.e. Gujarat, Maharashtra and Uttar Pradesh. Specifically I want to see the distribution of the number of people killed in an incident for the number of incidents.
+### **Analysis 5**: 
+In this analysis, I want to focus on the top 3 states observed above i.e. Gujarat, Maharashtra and Uttar Pradesh. Specifically I want to see the distribution of the number of people killed in an incident for the number of incidents.
 
-```{r top-3 distribution }
+```{r top-3 distribution, message=FALSE, warning=FALSE }
 
 #To modify facet label text later
 state.labs <- c("Gujarat", "Maharashtra", "Uttar Pradesh")
 names(state.labs) <- c("GU", "MA", "UP")
 
 hindu_muslim_complete_data %>%
+  #filtering only the top 3 states
   filter(STATECODE == c("GU","MA","UP")) %>%
   ggplot(mapping = aes(x = KILLED)) +
   geom_histogram() +
   #Modifying the label text of the facets by replacing state code with state name
   facet_wrap( ~STATECODE, scales = "free", ncol = 1, labeller = labeller(STATECODE = state.labs)) +
+  #labelling graph
   labs(
     title = "Hindu-Muslim violence incidents in top-3 states from 1950-1995" ,
     y = "Number of Incidents",
@@ -171,12 +193,15 @@ hindu_muslim_complete_data %>%
 
 ```
 
-### **Observation 5**: Even though Gujarat has the highest number of violence incidents, it does not have the highest number of killed people. Maharashtra has the largest variance due to having the maximum in the number of killed exceeding 400 people. This is followed by Uttar Pradesh and then Gujarat.
+### **Observation 5**: 
+Even though Gujarat has the highest number of violence incidents, it does not have the highest number of killed people. Maharashtra has the largest variance due to having the maximum in the number of killed exceeding 400 people. This is followed by Uttar Pradesh and then Gujarat.
 
-### **Analysis 6**: This analysis aims to see the effect of duration of a violent incident on the number of deaths
+### **Analysis 6**: 
+This analysis aims to see the effect of duration of a violent incident on the number of deaths
 
-```{r duration effect}
+```{r duration effect, message=FALSE, warning=FALSE}
  hindu_muslim_complete_data %>%
+  #grouping by duration of incident
   group_by(DURATION_I) %>%
   #Calculating the mean number of people killed and arrested for an incident with mean duration in days
   summarise(
@@ -204,18 +229,22 @@ hindu_muslim_complete_data %>%
 
 ```
 
-### **Observation 6**: There does not seem to be any direct relationship between the duration of the incident and the corresponding number of deaths or arrests. However, a peak in both arrests and killed people is observed when the duration of the incident is between 7-10 days.
+### **Observation 6**: 
+There does not seem to be any direct relationship between the duration of the incident and the corresponding number of deaths or arrests. However, a peak in both arrests and killed people is observed when the duration of the incident is between 7-10 days.
 
-### **Analysis 7**: This analysis aims to find if reports of Dalit vs Muslims violence during the riot led to higher arrests
+### **Analysis 7**: 
+This analysis aims to find if reports of Dalit vs Muslims violence during the riot led to higher arrests
 
-#### **Note**: Dalits (meaning "broken/scattered" in Sanskrit), is a term used for those aboriginal ethnic groups who have been subjected to untouchability.
+#### **Note**: 
+Dalits (meaning "broken/scattered" in Sanskrit), is a term used for those aboriginal ethnic groups who have been subjected to untouchability.
 
-```{r Dalits and arrests}
+```{r Dalits and arrests, message=FALSE, warning=FALSE}
  
 hindu_muslim_complete_data %>%
   ggplot(mapping = aes(x = DALIT_MUSL, y = ARRESTS)) + 
   #constructing a boxplot
   geom_boxplot() +
+  #labelling the graph
   labs(
     title = "Hindu-Muslim violence incidents from 1950-1995" ,
     x = "Reports of Dalit vs Muslim violence during the riot",
@@ -225,13 +254,16 @@ hindu_muslim_complete_data %>%
   
 ```
 
-### **Observation 7**: The median number of arrests are clearly higher when Dalit vs Muslim violence is reported during the riot. However, for when Dalit vs Muslim violence is not reported, there are a larger number of outliers and larger variance. This can also be because the data set has more "No" reported cases than "Yes".
+### **Observation 7**: 
+The median number of arrests are clearly higher when Dalit vs Muslim violence is reported during the riot. However, for when Dalit vs Muslim violence is not reported, there are a larger number of outliers and larger variance. This can also be because the data set has more "No" reported cases than "Yes".
 
-### **Analysis 8**: In this analysis, I want to narrow down the the first analysis we did, and look at it from the lens of the political leadership in place. I first want to observe the Prime Ministers in power between the years 1950-1995.
+### **Analysis 8**: 
+In this analysis, I want to narrow down the the first analysis we did, and look at it from the lens of the political leadership in place. I first want to observe the Prime Ministers in power between the years 1950-1995.
 
-#### **Analysis 8.1**: This analysis constructs a facet wrap depicting the incidents of Hindu-Muslim violence occurring when different prime ministers were in power between 1950-1995.
+#### **Analysis 8.1**: 
+This analysis constructs a facet wrap depicting the incidents of Hindu-Muslim violence occurring when different prime ministers were in power between 1950-1995.
 
-```{r}
+```{r prime-minister1, message=FALSE, warning=FALSE}
 
 number_incidents <- hindu_muslim_complete_data %>%
   #filtering out the missing prime minister data
@@ -256,11 +288,13 @@ number_incidents + facet_wrap(~prime_minister)
 
 ```
 
-#### **Observation 8.1**: From this facet wrap, we can observe a noticeable graph only for 4 prime minister.s. This is because of the relatively short terms the other prime ministers had (ranging between 13 days and less than year)
+#### **Observation 8.1**: 
+From this facet wrap, we can observe a noticeable graph only for 4 prime minister.s. This is because of the relatively short terms the other prime ministers had (ranging between 13 days and less than year)
 
-#### **Analysis 8.2**: Hence, in this next analysis I want to filter only those 4 prime ministers and narrow down this data
+#### **Analysis 8.2**: 
+Hence, in this next analysis I want to filter only those 4 prime ministers and narrow down this data
 
-```{r}
+```{r prime-minister2}
 four_pms <- c("Indira Gandhi", "Jawahar Lal Nehru", "P.V. Narasimha Rao", "Rajiv Gandhi")
 
 hindu_muslim_complete_data %>%
@@ -285,11 +319,13 @@ hindu_muslim_complete_data %>%
 
 ```
 
-#### **Observation 8.2**: From the above facetted graph, we can observe that under the power of Rajiv Gandhi (among the 4 prime ministers we narrowed down to), there were the largest reported incidents of Hindu-Muslim violence.
+#### **Observation 8.2**: 
+From the above facetted graph, we can observe that under the power of Rajiv Gandhi (among the 4 prime ministers we narrowed down to), there were the largest reported incidents of Hindu-Muslim violence.
 
-#### **Analysis 8.3**: Finally, I want to find out the political parties these prime ministers were affiliated to while in power.
+#### **Analysis 8.3**: 
+Finally, I want to find out the political parties these prime ministers were affiliated to while in power.
 
-```{r political party}
+```{r political party, message=FALSE, warning=FALSE}
 
 #Filtering only the 4 prime ministers we observed in our inital graph
 pm_party <- hindu_muslim_complete_data %>%
@@ -311,7 +347,8 @@ knitr::kable(
 
 ```
 
-#### **Observation 8.3**: From this table, we can notice that all 4 prime ministers belonged to the Indian National Congress.
+#### **Observation 8.3**: 
+From this table, we can notice that all 4 prime ministers belonged to the Indian National Congress.
 
 ## Concluding Observations:
 
@@ -344,16 +381,16 @@ This report has explored the dataset constructed by Varshney and Wilkinson along
   
   - Under Rajiv Gandhi's tenure, the highest number of Hindu-Muslim violent incidents were reported.
   
-  - Interestingly, all 4 prime ministers belonged to the same party - Indian National Congress. However, this is not a big surprise since the Indian National Congress had majority for decades after independance.
+  - Interestingly, all 4 prime ministers belonged to the same party i.e. the Indian National Congress. However, this is not a big surprise since the Indian National Congress had majority for decades after independance.
   
   
-_ **Conclusion**: Although this topic is extremely sensitive, especially after the introduction of the discriminatory NRC and CAA acts recently in India, it is essential to approach this topic with an open mind and consider the multiple variables in the past that have led to its current situation.
+- **Conclusion**: Although this topic is extremely sensitive, especially after the introduction of the discriminatory NRC and CAA acts recently in India, it is essential to approach this topic with an open mind and consider the multiple variables in the past that have led to its current situation.
 
 ## Limitation
 
-I was unable to analyse the variable 'LOCAL_PREC' due to the way it was coded by the authors in the data. Many similiar observations were worded differently or spelled differently, leading to repition. This is exemplified in the code below where there are 129 different reasons leading to an incident, with many incidents with the same reason. This meant I was not able to analyse the underlying reasons behind different riots. I am looking forward to learning ways I can manipulate around this fallacy.
+I was unable to analyse the variable 'LOCAL_PREC' due to the way it was coded by the authors in the data. Many similiar observations were worded differently or spelled differently, leading to repition. This is exemplified in counting number of (LOCAL_PREC) where there are 129 different reasons leading to an incident, but there are many incidents with the same reason. This meant I was not able to analyse the underlying reasons behind different riots. I am looking forward to learning ways I can manipulate around this fallacy.
 
-```{r}
+```{r limitation demo, echo = FALSE}
 hindu_muslim_complete_data %>%
   distinct(LOCAL_PREC)
 ```
