@@ -6,7 +6,7 @@ output: github_document
 
 ## Introduction
 
-### Goal: This report aims to explore the history of violent events between the 2 controversial religions of Hinduism and Islam in the context of post-independant India. Keeping in mind the recent riots in the capital New Delhi, it is essential to trace back and analyse this relationship in the latter half of the 20th century. This report relies on the dataset created by Varshney and Wilkinson, who collected all incidents on Hindu-Muslim Violence in India between 1950-1995 reported in the national newspaper Times of India. This report will 
+### Goal: This report aims to explore the history of violent events between the 2 controversial religions of Hinduism and Islam in the context of post-independant India. Keeping in mind the recent riots in the capital New Delhi, it is essential to trace back and analyse this relationship in the latter half of the 20th century. This report relies on the dataset created by Varshney and Wilkinson, who collected all incidents on Hindu-Muslim Violence in India between 1950-1995 reported in the national newspaper Times of India. 
 
 
 ```{r setup, include=FALSE}
@@ -15,8 +15,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(knitr)
 library(here)
-
 
 # set default theme
 theme_set(theme_minimal())
@@ -35,7 +35,6 @@ yearly_pop_pm_data <- here("data", "yearly_pop_pm.csv") %>%
               cols(
                 hindu_prop = col_double(),
                 muslim_prop = col_double()
-          
               ))
 ```
 
@@ -47,7 +46,6 @@ hindu_muslim_complete_data <- left_join(
                                 x = hindu_muslim_data, 
                                 y = yearly_pop_pm_data
                                       )
-
 ```
 
 ## Exploring Data
@@ -72,8 +70,6 @@ hindu_muslim_complete_data %>%
     y = "Number of incidents",
     caption = "Source: Varshney, Wilkinson dataset"
   ) 
-
-
 
 ```
 
@@ -317,11 +313,45 @@ knitr::kable(
 
 #### **Observation 8.3**: From this table, we can notice that all 4 prime ministers belonged to the Indian National Congress.
 
-## Conclusion
+## Concluding Observations:
 
+This report has explored the dataset constructed by Varshney and Wilkinson along multiple variables to generate a deep insight into the reported Hindu-Muslim incidents of violence in the setting of post-independant India between 1950-1995. 
 
+- **Overview**: 
+
+  - While there was not a general trend in the number of violent incidents, there were certainly 2 mentionable peaks in late 1980 and early 1990. This can be explained by the infamous 1990 communal riots situated in Hyderabad, India. Moreover, according to the census data which is collected once every 10 years, the proportion of Hindus has decreased and proportion of Muslims has decreased between 1950-1995. However, this change is extremely small.
+  
+  - Month-wise, the month of March had the highest number of reported incidents in the given time period. This could be due to the celebration of the big Hindu festival of Holi in that month. However, this is only a speculation, and there could be other reasons.
+
+- **State-Wise Overview**:
+
+  - State-wise, the western state of Gujarat had the highest number of reported incidents by a large margin. Interestingly, the same state is also infamous for the Hindu-Muslim riots in 2002, which is not even recorded in this dataset. Gujarat, is followed by Maharashtra and Uttar Pradesh which are close in number.
+  
+  - Looking at these 3 states, Uttar Pradesh had the largest number of people killed as a result of the incidents of violence. Moreover, it also has the largest variance.
+  
+
+- **Arrested and Killed**
+
+  - Before observing the effect of the duration of a given incident, one would expect a longer lasting incident to have larger number of deaths or arrests. However, on plotting the graph, there was no noticeable trend between these 3 variables, except for a peak for number of arrests due to an outlier case.
+  
+- **Dalit vs Muslims**
+
+  - Since decades, dalits have bared the wrath of the Hindu hierarchical society. Literally translating to untouchable, they were considered to be at the bottom of the 5 "varna" system in Hinduism. Hence, I wanted to observe if involvement of Dalits in the violent acts against Muslims led to a change in number of arrests. Although the median number of arrests were higher if Dalit vs Muslim violence was reported, however there was a larger variance in incidents they were not reported.
+  
+- **Hindu Muslim Violence under different Prime Ministers**
+
+  - I narrowed by observations of prime ministers to 4 prime ministers who had relatively longer tenures than their counterparts to get noticeable graphs when plotted to see number of incidents. These 4 prime minisiters were Indira Gandhi, Jawahar Lal Nehru, P.V. Narasimha Rao and .Rajiv Gandhi. 
+  
+  - Under Rajiv Gandhi's tenure, the highest number of Hindu-Muslim violent incidents were reported.
+  
+  - Interestingly, all 4 prime ministers belonged to the same party - Indian National Congress. However, this is not a big surprise since the Indian National Congress had majority for decades after independance.
+  
+  
+_ **Conclusion**: Although this topic is extremely sensitive, especially after the introduction of the discriminatory NRC and CAA acts recently in India, it is essential to approach this topic with an open mind and consider the multiple variables in the past that have led to its current situation.
 
 ## Limitation
+
+I was unable to analyse the variable 'LOCAL_PREC' due to the way it was coded by the authors in the data. Many similiar observations were worded differently or spelled differently, leading to repition. This is exemplified in the code below where there are 129 different reasons leading to an incident, with many incidents with the same reason. This meant I was not able to analyse the underlying reasons behind different riots. I am looking forward to learning ways I can manipulate around this fallacy.
 
 ```{r}
 hindu_muslim_complete_data %>%
