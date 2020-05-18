@@ -1,0 +1,27 @@
+---
+title: "First"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+```
+
+## Importing the data files
+
+```{r import data}
+hindu_muslim_data <- here("data", "hindu_muslim_violence.csv") %>%
+  read_csv()
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
