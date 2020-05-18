@@ -1,27 +1,56 @@
 ---
-title: "First"
+title: "Exploring Hindu Muslim Violence in India"
+author: "Ojaswi Malik"
 output: github_document
 ---
+
+## Introduction
+
+### Goal: This report aims to explore the history of violent events between the 2 controversial religions of Hinduism and Islam in the context of post-independant India. Keeping in mind the recent riots in the capital New Delhi, it is essential to trace back and analyse this relationship in the latter half of the 20th century. This report relies on the dataset created by Varshney and Wilkinson, who collected all incidents on Hindu-Muslim Violence in India between 1950-1995 reported in the national newspaper Times of India. This report will
+
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(dplyr)
 library(here)
 ```
 
 ## Importing the data files
 
 ```{r import data}
+#Importing the first dataset
 hindu_muslim_data <- here("data", "hindu_muslim_violence.csv") %>%
   read_csv()
+
+#Importing the second dataset and parsing column types
+yearly_pop_pm_data <- here("data", "yearly_pop_pm.csv") %>%
+  read_csv( col_types = 
+              cols(
+                hindu_prop = col_double(),
+                muslim_prop = col_double()
+          
+              ))
 ```
 
-## Including Plots
+## Data Wrangling
 
-You can also embed plots, for example:
+``` {r wrangling}
+#Joining the 2 datasets using left join
+hindu_muslim_complete_data <- left_join(
+                                x = hindu_muslim_data, 
+                                y = yearly_pop_pm_data
+                                      )
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Exploring Data
+
+### Analysis 1: 
+
+```{r}
+
+```
+
