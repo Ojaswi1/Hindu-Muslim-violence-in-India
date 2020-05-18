@@ -24,3 +24,5 @@
   - Varshney, Ashutosh, and Wilkinson, Steven. Varshney-Wilkinson Dataset on Hindu-Muslim Violence in India, 1950-1995, Version 2. Inter-university Consortium for Political and Social Research [distributor], 2006-02-17. https://doi.org/10.3886/ICPSR04342.v1
   
   - The second data file i.e. "yearly_pop_pm.csv" is a small data file manually constructed by me with the intention of joining it with the original file by Varshney and Wilkinson. This file includes data from the Socio-Economic and Caste Census 2011.
+  
+- *Note*: To check reproducability, after completing my work, I cloned and downloaded my work into a new project, and it worked!
