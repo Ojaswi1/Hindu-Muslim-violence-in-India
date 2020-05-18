@@ -192,28 +192,86 @@ hindu_muslim_complete_data %>%
 #### **Note**: Dalits (meaning "broken/scattered" in Sanskrit), is a term used for those aboriginal ethnic groups who have been subjected to untouchability.
 
 ```{r Dalits and arrests}
-
-
-
+ 
+hindu_muslim_complete_data %>%
+  ggplot(mapping = aes(x = DALIT_MUSL, y = ARRESTS)) + 
+  #constructing a boxplot
+  geom_boxplot() +
+  labs(
+    title = "Hindu-Muslim violence incidents from 1950-1995" ,
+    x = "Reports of Dalit vs Muslim violence during the riot",
+    y = "Number of people arrested",
+    caption = "Source: Varshney, Wilkinson dataset"
+  )
+  
 ```
 
-### **Observation 6**: 
+### **Observation 6**: The median number of arrests are clearly higher when Dalit vs Muslim violence is reported during the riot. However, for when Dalit vs Muslim violence is not reported, there are a larger number of outliers and larger variance. This can also be because the data set has more "No" reported cases than "Yes".
 
-### **Analysis 7**: hindu muslim pop prop
+### **Analysis 7**: 
 
 ```{r}
+
+number_incidencts <- hindu_muslim_complete_data %>%
+  #grouping by year to count incidents per year
+  group_by(YEAR, prime_minister) %>%
+  summarise( 
+    count = n()
+    ) %>%
+  #plotting the line chart
+  ggplot(mapping = aes(x = YEAR, y = count)) +
+  geom_line() +
+  #labelling the graph
+  labs(
+    title = "Number of Hindu-Muslim violence incidents from 1950-1995" ,
+    x = "Year",
+    y = "Number of incidents",
+    caption = "Source: Varshney, Wilkinson dataset"
+  ) 
+
+number_incidencts + facet_wrap(~prime_minister, scales = "free" )
 
 ```
 
 ### **Observation 7**: 
 
-### **Analysis 8**: pm and incidents
+### **Analysis 8**: 
+
+#### **8.1**: First I want to observe the changes in Hindus and Muslims proportion of population in the time period 1950-1995.
+
+```{r}
+#Saving this graph to reuse in next analysis
+prop_change <- hindu_muslim_complete_data %>%
+  group_by(YEAR) %>%
+  ggplot(mapping = aes(x = YEAR)) + 
+  geom_line(mapping = aes(y = hindu_prop, color = "Proportion of Hindu population")) +
+  geom_line(mapping = aes(y = muslim_prop, color = "Proportion of Muslim population")) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Proportion of Hindu and Muslim population in India  from 1950-1995" ,
+    x = "Year",
+    y = "Percentage",
+    caption = "Source: Socio-Economic and Caste Census, 2011",
+    color = NULL
+  ) +
+  #moving the legend to the bottom
+  theme(legend.position = "bottom")
+  
+prop_change
+```
+
+#### **Observation 8.1**: Although the changes have been small, we can observe a gradual decrease in proportion of Hindus and an increase in the proportion of Muslims as recorded in the census data between 1950-1995. 
+
+#### **8.2**: Over this graph, I want to 
 
 ```{r}
 
+number_incidencts + 
+  prop_change
+
 ```
 
-### **Observation 8**: 
+### 
 
 link mde
 
@@ -221,3 +279,10 @@ link mde
 
 ## Conclusion
 
+
+## Limitation
+
+```{r}
+hindu_muslim_complete_data %>%
+  distinct(LOCAL_PREC)
+```
