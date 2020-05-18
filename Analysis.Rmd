@@ -73,7 +73,9 @@ hindu_muslim_complete_data %>%
     x = "Year",
     y = "Number of incidents",
     caption = "Source: Varshney, Wilkinson dataset"
-  )
+  ) 
+
+
 
 ```
 
@@ -115,7 +117,7 @@ hindu_muslim_complete_data %>%
   coord_flip() +
   labs(
     title = "State-wise Hindu-Muslim violence incidents from 1950-1995" ,
-    y = "Number of Incidencts",
+    y = "Number of Incidents",
     x = "State",
     caption = "Source: Varshney, Wilkinson dataset"
   )
@@ -126,19 +128,94 @@ hindu_muslim_complete_data %>%
 
 ### **Note regarding Analysis 3**: In constructing this analysis, I noticed the fallacies in coding the data by the authors. Initially, I had tried to use STATE to get full state-names, but some states were written with different spellings or had another tiny differences which lead to similiar states being printed multiple times. However, the use of STATECODE resolved this error.
 
-### **Analysis 4**: In the top 3 states with the highest number of incidents as observed in Analysis 3, I want to see the distribution of number of killed and the number of arrests
+### **Analysis 4**: In this analysis, I want to focus on the top 3 states observed above i.e. Gujarat, Maharashtra and Uttar Pradesh. Specifically I want to see the distribution of the number of people killed in an incident for the number of incidents.
 
 ```{r top-3 distribution }
 
+#To modify facet label text later
+state.labs <- c("Gujarat", "Maharashtra", "Uttar Pradesh")
+names(state.labs) <- c("GU", "MA", "UP")
+
 hindu_muslim_complete_data %>%
-  #only looking at the top 3 states of GU, MA and UP
-  filter( STATECODE == c('GU', 'MA', 'UP')) %>%
-  group_by(STATECODE) %>%
+  filter(STATECODE == c("GU","MA","UP")) %>%
+  ggplot(mapping = aes(x = KILLED)) +
+  geom_histogram() +
+  #Modifying the label text of the facets by replacing state code with state name
+  facet_wrap( ~STATECODE, scales = "free", ncol = 1, labeller = labeller(STATECODE = state.labs)) +
+  labs(
+    title = "Hindu-Muslim violence incidents in top-3 states from 1950-1995" ,
+    y = "Number of Incidents",
+    x = "Number of people killed",
+    caption = "Source: Varshney, Wilkinson dataset"
+  )
   
 
 ```
 
-### **Observation 4**:
+### **Observation 4**: Even though Gujarat has the highest number of violence incidents, it does not have the highest number of killed people. Maharashtra has the largest variance due to having the maximum in the number of killed exceeding 400 people. This is followed by Uttar Pradesh and then Gujarat.
+
+### **Analysis 5**: This analysis aims to see the effect of duration of a violent incident on the number of deaths
+
+```{r duration effect}
+ hindu_muslim_complete_data %>%
+  group_by(DURATION_I) %>%
+  #Calculating the mean number of people killed and arrested for an incident with mean duration in days
+  summarise(
+    duration = mean(DURATION_I, na.rm = TRUE),
+    killed = mean(KILLED, na.rm = TRUE),
+    arrested = mean(ARRESTS, na.rm = TRUE)
+  ) %>% 
+  #removing the values which were calculated as NaN
+  filter( !is.nan(killed)) %>%
+  filter( !is.nan(arrested)) %>%
+  #layering both line graphs to depict killed and arrested 
+  ggplot(mapping = aes(x = duration)) + 
+  geom_line(mapping = aes(y = killed, color = "Killed")) +
+  geom_line(mapping = aes(y = arrested, color = "Arrested")) +
+  #labelling the graph
+  labs(
+    title = "Hindu-Muslim violence incidents from 1950-1995" ,
+    x = "Duration of Incident (days)",
+    y = "Number of people killed/arrested",
+    caption = "Source: Varshney, Wilkinson dataset",
+    color = NULL
+  ) +
+  #moving the legend to the bottom
+  theme(legend.position = "bottom")
+
+```
+
+### **Observation 5**: There does not seem to be any direct relationship between the duration of the incident and the corresponding number of deaths or arrests. However, a peak in both arrests and killed people is observed when the duration of the incident is between 7-10 days.
+
+### **Analysis 6**: This analysis aims to find if reports of Dalit vs Muslims violence during the riot led to higher arrests
+
+#### **Note**: Dalits (meaning "broken/scattered" in Sanskrit), is a term used for those aboriginal ethnic groups who have been subjected to untouchability.
+
+```{r Dalits and arrests}
+
+
+
+```
+
+### **Observation 6**: 
+
+### **Analysis 7**: hindu muslim pop prop
+
+```{r}
+
+```
+
+### **Observation 7**: 
+
+### **Analysis 8**: pm and incidents
+
+```{r}
+
+```
+
+### **Observation 8**: 
+
+link mde
 
 ## Observations
 
